@@ -1,22 +1,29 @@
 import { defineConfig } from "vite";
+import path from "path";
 import react from "@vitejs/plugin-react";
-
+import tailwindcss from "@tailwindcss/vite";
 import federation from "@originjs/vite-plugin-federation";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
+    tailwindcss(),
     federation({
       name: "inventory",
       filename: "remoteEntry.js",
       exposes: {
-        "./App": "./src/App",
+        "./modules": "./src/modules/index.ts",
       },
+
       shared: ["react", "react-dom"],
     }),
   ],
-
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
   build: {
     modulePreload: false,
     target: "esnext",

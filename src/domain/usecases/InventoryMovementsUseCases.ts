@@ -9,11 +9,15 @@ export const getInventoryMovements = (): Promise<InventoryMovement[]> => {
 //   return request<Product>("PUT", `products/${product.uid}`, product);
 // };
 
-// export const createProduct = (
-//   product: Omit<Product, "id">
-// ): Promise<Product> => {
-//   return request<Product>("POST", "products", product);
-// };
+export const createInventoryMovement = (
+  inventoryMovement: Omit<InventoryMovement, "uid">
+): Promise<InventoryMovement> => {
+  return request<InventoryMovement>(
+    "POST",
+    "inventory-movements",
+    inventoryMovement
+  );
+};
 
 // export const deleteProduct = (
 //   productId: string

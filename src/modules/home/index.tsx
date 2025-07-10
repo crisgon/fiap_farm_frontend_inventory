@@ -5,15 +5,13 @@ import { SalesTab } from "./components/SalesTab";
 import { ProductionsTab } from "./components/ProductionsTab";
 
 function Home() {
-  const { data } = useInventoryMovementsQuery();
+  const { data, isLoading, refetch, isPending } = useInventoryMovementsQuery();
   const sales =
     data?.filter((item) => item.source === SourceInventoryMovement.SALE) || [];
   const productions =
     data?.filter(
       (item) => item.source === SourceInventoryMovement.PRODUCTION
     ) || [];
-
-  console.log(data);
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-muted/50 p-6">
@@ -35,10 +33,18 @@ function Home() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value={SourceInventoryMovement.PRODUCTION}>
-            <ProductionsTab data={productions} />
+            <ProductionsTab
+              data={productions}
+              isLoading={isLoading || isPending}
+              refetch={refetch}
+            />
           </TabsContent>
           <TabsContent value={SourceInventoryMovement.SALE}>
-            <SalesTab data={sales} />
+            <SalesTab
+              data={sales}
+              isLoading={isLoading || isPending}
+              refetch={refetch}
+            />
           </TabsContent>
         </Tabs>
       </div>

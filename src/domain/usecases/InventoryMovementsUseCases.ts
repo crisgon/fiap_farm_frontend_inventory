@@ -5,12 +5,18 @@ export const getInventoryMovements = (): Promise<InventoryMovement[]> => {
   return request<InventoryMovement[]>("GET", "inventory-movements");
 };
 
-// export const updateProduct = (product: Product): Promise<Product> => {
-//   return request<Product>("PUT", `products/${product.uid}`, product);
-// };
+export const updateInventoryMovement = (
+  movement: InventoryMovement
+): Promise<InventoryMovement> => {
+  return request<InventoryMovement>(
+    "PUT",
+    `inventory-movements/${movement.uid}`,
+    movement
+  );
+};
 
 export const createInventoryMovement = (
-  inventoryMovement: Omit<InventoryMovement, "uid">
+  inventoryMovement: Partial<InventoryMovement>
 ): Promise<InventoryMovement> => {
   return request<InventoryMovement>(
     "POST",
@@ -19,8 +25,11 @@ export const createInventoryMovement = (
   );
 };
 
-// export const deleteProduct = (
-//   productId: string
-// ): Promise<{ success: boolean }> => {
-//   return request<{ success: boolean }>("DELETE", `products/${productId}`);
-// };
+export const deleteInventoryMovement = (
+  movementId: string
+): Promise<{ success: boolean }> => {
+  return request<{ success: boolean }>(
+    "DELETE",
+    `inventory-movements/${movementId}`
+  );
+};

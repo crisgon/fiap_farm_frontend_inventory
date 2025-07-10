@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 
 export function useCreateInventoryMovementMutation() {
   return useMutation({
-    mutationFn: (inventoryMovement: Omit<InventoryMovement, "uid">) =>
+    mutationFn: (inventoryMovement: Partial<InventoryMovement>) =>
       createInventoryMovement(inventoryMovement),
   });
 }

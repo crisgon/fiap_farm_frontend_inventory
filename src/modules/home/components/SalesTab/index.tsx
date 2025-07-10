@@ -9,17 +9,30 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Minus, Plus, PlusCircle } from "lucide-react";
+import { Minus, Pencil, Plus, PlusCircle, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { CreateDialog } from "../CreateDialog";
 import type { TabsProps } from "../../types";
 import {
   SourceInventoryMovement,
   TypeInventoryMovement,
+  type InventoryMovement,
 } from "@/domain/repositories/InventoryMovementsRepository";
+import DeleteDialog from "../DeleteDialog";
 
 function SalesTab({ data = [], isLoading = false, refetch }: TabsProps) {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState<boolean>(false);
+  const [editableMovement, setEditableMovement] = useState<
+    Partial<InventoryMovement> | null | undefined
+  >({
+    productId: undefined,
+    type: TypeInventoryMovement.ENTRY,
+    quantity: 0,
+    source: SourceInventoryMovement.PRODUCTION,
+    referenceId: undefined,
+    createdAt: new Date(),
+  });
 
   return (
     <>
@@ -81,6 +94,35 @@ function SalesTab({ data = [], isLoading = false, refetch }: TabsProps) {
                         ? new Date(movement.createdAt).toLocaleDateString()
                         : ""}
                     </TableCell>
+                    <TableCell
+                      style={{
+                        flexDirection: "row",
+                        gap: 2,
+                      }}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditableMovement({
+                            ...movement,
+                          });
+                          setModalIsOpen(true);
+                        }}
+                      >
+                        <Pencil color="#198155" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditableMovement({ ...movement });
+                          setDeleteModalIsOpen(true);
+                        }}
+                      >
+                        <Trash2 color="#ef4444" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -88,12 +130,24 @@ function SalesTab({ data = [], isLoading = false, refetch }: TabsProps) {
           )}
         </CardContent>
       </Card>
-      <CreateDialog
-        isOpen={modalIsOpen}
-        setIsOpen={setModalIsOpen}
-        refetch={refetch}
-        sourceMovement={SourceInventoryMovement.SALE}
-      />
+      {modalIsOpen && (
+        <CreateDialog
+          isOpen={modalIsOpen}
+          setIsOpen={setModalIsOpen}
+          refetch={refetch}
+          sourceMovement={SourceInventoryMovement.SALE}
+          selectedMovement={editableMovement}
+        />
+      )}
+      {deleteModalIsOpen && (
+        <DeleteDialog
+          isOpen={deleteModalIsOpen}
+          setIsOpen={setDeleteModalIsOpen}
+          refetch={refetch}
+          selectedMovement={editableMovement}
+          setSelectedMovement={setEditableMovement}
+        />
+      )}
     </>
   );
 }

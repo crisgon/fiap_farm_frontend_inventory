@@ -11,8 +11,10 @@ import { useSalesQuery } from "@/hooks/Sales/useSalesQuery";
 
 export function SaleSelect({
   setData,
+  value,
 }: {
-  setData: React.Dispatch<React.SetStateAction<InventoryMovement>>;
+  setData: React.Dispatch<React.SetStateAction<Partial<InventoryMovement>>>;
+  value?: string;
 }) {
   const { data: sales, isLoading: salesLoading } = useSalesQuery();
 
@@ -20,16 +22,9 @@ export function SaleSelect({
     <div className="grid gap-3">
       <Label htmlFor="referenceId">Venda *</Label>
       <Select
+        value={value}
         name="referenceId"
         disabled={salesLoading}
-        // value={
-        //   editableProduction?.productId && editableProduction?.product
-        //     ? {
-        //         value: editableProduction.productId,
-        //         label: editableProduction.product.name,
-        //       }
-        //     : undefined
-        // }
         onValueChange={(option) => {
           setData((prev) => ({
             ...prev,

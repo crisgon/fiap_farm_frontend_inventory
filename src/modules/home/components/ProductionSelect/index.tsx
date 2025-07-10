@@ -11,25 +11,20 @@ import { useProductionsQuery } from "@/hooks/Productions/useProductionsQuery";
 
 export function ProductionSelect({
   setData,
+  value,
 }: {
-  setData: React.Dispatch<React.SetStateAction<InventoryMovement>>;
+  setData: React.Dispatch<React.SetStateAction<Partial<InventoryMovement>>>;
+  value?: string;
 }) {
   const { data, isLoading } = useProductionsQuery();
 
   return (
     <div className="grid gap-3">
-      <Label htmlFor="referenceId">Venda *</Label>
+      <Label htmlFor="referenceId">Produção *</Label>
       <Select
+        value={value}
         name="referenceId"
         disabled={isLoading}
-        // value={
-        //   editableProduction?.productId && editableProduction?.product
-        //     ? {
-        //         value: editableProduction.productId,
-        //         label: editableProduction.product.name,
-        //       }
-        //     : undefined
-        // }
         onValueChange={(option) => {
           setData((prev) => ({
             ...prev,
@@ -40,7 +35,7 @@ export function ProductionSelect({
         <SelectTrigger className="w-full">
           <SelectValue
             className="text-foreground text-sm native:text-lg"
-            placeholder="Selecione a venda de referência"
+            placeholder="Selecione a produção de referência"
           />
         </SelectTrigger>
         <SelectContent>

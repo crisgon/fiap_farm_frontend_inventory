@@ -32,12 +32,14 @@ import type {
 import { useState } from "react";
 import { SaleSelect } from "../SaleSelect";
 import { ProductionSelect } from "../ProductionSelect";
+import { useUpdateInventoryMovementMutation } from "@/hooks/InventoryMovements/useUpdateInventoryMovementMutation";
 
 export function CreateDialog({
   isOpen = false,
   sourceMovement,
   setIsOpen,
   refetch,
+  selectedMovement,
 }: {
   isOpen: boolean;
   sourceMovement: SourceInventoryMovement;
@@ -45,6 +47,7 @@ export function CreateDialog({
   refetch: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<InventoryMovement[], Error>>;
+  selectedMovement: Partial<InventoryMovement> | null | undefined;
 }) {
   const defaultFormState = {
     type: TypeInventoryMovement.ENTRY,
@@ -57,19 +60,41 @@ export function CreateDialog({
 
   const { data: products, isLoading: productsLoading } = useProductsQuery();
 
-  const { mutate, isPending } = useCreateInventoryMovementMutation();
+  const { mutate: createInventoryMovement, isPending: createIsPending } =
+    useCreateInventoryMovementMutation();
+  const { mutate: updateInventoryMovement, isPending: updateIsPending } =
+    useUpdateInventoryMovementMutation();
 
-  const [data, setData] = useState<InventoryMovement>(defaultFormState);
+  const [data, setData] = useState<Partial<InventoryMovement>>(
+    selectedMovement || defaultFormState
+  );
   const isFormInvalid = !data.quantity || !data.productId || !data.referenceId;
 
   const handleSubmit = () => {
-    mutate(data, {
-      onSuccess: () => {
-        setIsOpen(false);
-        refetch();
-      },
-    });
+    if (!data.uid) {
+      createInventoryMovement(data, {
+        onSuccess: () => {
+          setIsOpen(false);
+          refetch();
+        },
+      });
+    } else {
+      updateInventoryMovement(data as InventoryMovement, {
+        onSuccess: () => {
+          setIsOpen(false);
+          refetch();
+        },
+      });
+    }
   };
+
+  const buttonLabel = data?.uid
+    ? updateIsPending
+      ? "Salvando..."
+      : "Salvar"
+    : createIsPending
+    ? "Criando..."
+    : "Criar";
 
   return (
     <Dialog
@@ -95,6 +120,7 @@ export function CreateDialog({
                   <Label htmlFor="productId">Produto *</Label>
                   <Select
                     name="productId"
+                    value={data.productId}
                     onValueChange={(option) => {
                       setData((prev) => ({
                         ...prev,
@@ -118,15 +144,18 @@ export function CreateDialog({
                   </Select>
                 </div>
                 {sourceMovement === SourceInventoryMovement.PRODUCTION ? (
-                  <ProductionSelect setData={setData} />
+                  <ProductionSelect
+                    value={data.referenceId}
+                    setData={setData}
+                  />
                 ) : (
-                  <SaleSelect setData={setData} />
+                  <SaleSelect value={data.referenceId} setData={setData} />
                 )}
                 <div className="grid gap-3">
                   <Label htmlFor="type">Tipo da movimentação</Label>
                   <RadioGroup
                     name="type"
-                    defaultValue={TypeInventoryMovement.ENTRY}
+                    defaultValue={data.type}
                     className="flex flex-row gap-6 mt-2"
                     onValueChange={(value) => {
                       setData((prev) => ({
@@ -159,6 +188,7 @@ export function CreateDialog({
                     id="quantity"
                     name="quantity"
                     type="number"
+                    value={data.quantity}
                     onChange={(event) => {
                       setData((prev) => ({
                         ...prev,
@@ -183,9 +213,9 @@ export function CreateDialog({
                 <Button
                   type="submit"
                   onClick={() => handleSubmit()}
-                  disabled={isFormInvalid || isPending}
+                  disabled={isFormInvalid || updateIsPending || createIsPending}
                 >
-                  {isPending ? "Criando..." : "Criar"}
+                  {buttonLabel}
                 </Button>
               </DialogFooter>
             </>

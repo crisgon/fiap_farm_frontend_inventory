@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Home, Products } from "./modules";
-import { useAppDispatch, useAppSelector } from "./stores/redux/hooks";
+import { useAppDispatch } from "./stores/redux/hooks";
 import { useEffect } from "react";
 import { setUser, type User } from "./stores/redux/slices/authSlice";
 
@@ -11,12 +11,9 @@ interface AppComponent {
 function App({ user }: AppComponent) {
   const dispatch = useAppDispatch();
 
-  const store = useAppSelector((state) => state);
   useEffect(() => {
     dispatch(setUser(user as User));
   }, [dispatch, user]);
-
-  console.log(store);
 
   return (
     <Routes>

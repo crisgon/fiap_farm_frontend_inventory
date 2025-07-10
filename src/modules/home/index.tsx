@@ -1,91 +1,55 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
+import { SourceInventoryMovement } from "@/domain/repositories/InventoryMovementsRepository";
+import { useInventoryMovementsQuery } from "@/hooks/InventoryMovements/useInventoryMovementsQuery";
+import { SalesTab } from "./components/SalesTab";
+import { ProductionsTab } from "./components/ProductionsTab";
 
 function Home() {
+  const { data, isLoading, refetch, isPending } = useInventoryMovementsQuery();
+  const sales =
+    data?.filter((item) => item.source === SourceInventoryMovement.SALE) || [];
+  const productions =
+    data?.filter(
+      (item) => item.source === SourceInventoryMovement.PRODUCTION
+    ) || [];
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-muted/50 p-6">
-      <Card className="w-full max-w-lg shadow-lg">
-        <CardHeader className="flex flex-col items-center gap-2">
-          <CardTitle>Estoque - Home</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Badge className="mb-2" variant="outline">
-            Estoque Ativo
-          </Badge>
-          <p>Bem-vindo ao módulo de estoque do seu sistema!</p>
-          <Separator className="my-4" />
-          <Alert>
-            <AlertTitle>Informação</AlertTitle>
-            <AlertDescription>
-              Esta é uma tela de exemplo utilizando <strong>shadcn/ui</strong>.
-            </AlertDescription>
-          </Alert>
-        </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button variant="secondary">Ver Produtos</Button>
-        </CardFooter>
-      </Card>
+    <div className="flex flex-col items-center min-h-screen bg-muted/50 p-6">
+      <div className="w-full max-w-5xl h-full">
+        <h3 className="font-bold text-3xl text-primary">
+          Movimentações de Estoque
+        </h3>
+
+        <Tabs
+          defaultValue={SourceInventoryMovement.PRODUCTION}
+          className="mt-8"
+        >
+          <TabsList className="mb-2">
+            <TabsTrigger value={SourceInventoryMovement.PRODUCTION}>
+              Produção
+            </TabsTrigger>
+            <TabsTrigger value={SourceInventoryMovement.SALE}>
+              Venda
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value={SourceInventoryMovement.PRODUCTION}>
+            <ProductionsTab
+              data={productions}
+              isLoading={isLoading || isPending}
+              refetch={refetch}
+            />
+          </TabsContent>
+          <TabsContent value={SourceInventoryMovement.SALE}>
+            <SalesTab
+              data={sales}
+              isLoading={isLoading || isPending}
+              refetch={refetch}
+            />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 }
 
 export { Home };
-
-// import {
-//   Card,
-//   CardHeader,
-//   CardTitle,
-//   CardContent,
-//   CardFooter,
-// } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Badge } from "@/components/ui/badge";
-// import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-// import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-// import { Separator } from "@/components/ui/separator";
-
-// function Home() {
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-screen bg-muted/50 p-6">
-//       <Card className="w-full max-w-lg shadow-lg">
-//         <CardHeader className="flex flex-col items-center gap-2">
-//           <Avatar>
-//             <AvatarImage
-//               src="https://source.unsplash.com/100x100/?warehouse,inventory"
-//               alt="Estoque"
-//             />
-//             <AvatarFallback>ES</AvatarFallback>
-//           </Avatar>
-//           <CardTitle>Estoque - Home</CardTitle>
-//         </CardHeader>
-//         <CardContent>
-//           <Badge className="mb-2" variant="outline">
-//             Estoque Ativo
-//           </Badge>
-//           <p>Bem-vindo ao módulo de estoque do seu sistema!</p>
-//           <Separator className="my-4" />
-//           <Alert>
-//             <AlertTitle>Informação</AlertTitle>
-//             <AlertDescription>
-//               Esta é uma tela de exemplo utilizando <strong>shadcn/ui</strong>.
-//             </AlertDescription>
-//           </Alert>
-//         </CardContent>
-//         <CardFooter className="flex justify-end">
-//           <Button variant="secondary">Ver Produtos</Button>
-//         </CardFooter>
-//       </Card>
-//     </div>
-//   );
-// }
-
-// export { Home };

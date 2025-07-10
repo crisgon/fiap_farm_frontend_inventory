@@ -11,12 +11,18 @@ export interface InventoryMovement {
   product?: Product;
 }
 
-export enum SourceInventoryMovement {
-  SALE = "SALE",
-  PRODUCTION = "PRODUCTION",
-}
+export const SourceInventoryMovement = {
+  SALE: "SALE",
+  PRODUCTION: "PRODUCTION",
+} as const;
 
-export enum TypeInventoryMovement {
-  ENTRY = "ENTRY",
-  EXIT = "EXIT",
-}
+export type SourceInventoryMovement =
+  (typeof SourceInventoryMovement)[keyof typeof SourceInventoryMovement];
+
+export const TypeInventoryMovement = {
+  ENTRY: "ENTRY",
+  EXIT: "EXIT",
+} as const;
+
+export type TypeInventoryMovement =
+  (typeof TypeInventoryMovement)[keyof typeof TypeInventoryMovement];

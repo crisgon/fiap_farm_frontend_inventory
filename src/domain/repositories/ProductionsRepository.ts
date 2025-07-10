@@ -15,8 +15,11 @@ export interface Production {
   product: Product;
 }
 
-export enum StatusProduction {
-  WAITING = "WAITING",
-  IN_PROGRESS = "IN_PROGRESS",
-  HARVESTED = "HARVESTED",
-}
+export const StatusProduction = {
+  WAITING: "WAITING",
+  IN_PROGRESS: "IN_PROGRESS",
+  HARVESTED: "HARVESTED",
+} as const;
+
+export type StatusProduction =
+  (typeof StatusProduction)[keyof typeof StatusProduction];

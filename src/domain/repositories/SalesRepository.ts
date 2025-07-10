@@ -13,12 +13,14 @@ export interface Sale {
   product: Product;
 }
 
-export enum SaleStatus {
-  ACTIVE = "ACTIVE",
-  INACTIVE = "INACTIVE",
-  PENDING = "PENDING",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED",
-  REFUNDED = "REFUNDED",
-  FAILED = "FAILED",
-}
+export const SaleStatus = {
+  ACTIVE: "ACTIVE",
+  INACTIVE: "INACTIVE",
+  PENDING: "PENDING",
+  COMPLETED: "COMPLETED",
+  CANCELLED: "CANCELLED",
+  REFUNDED: "REFUNDED",
+  FAILED: "FAILED",
+} as const;
+
+export type SaleStatus = (typeof SaleStatus)[keyof typeof SaleStatus];

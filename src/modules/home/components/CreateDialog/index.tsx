@@ -40,6 +40,7 @@ export function CreateDialog({
   setIsOpen,
   refetch,
   selectedMovement,
+  setSelectedMovement,
 }: {
   isOpen: boolean;
   sourceMovement: SourceInventoryMovement;
@@ -48,10 +49,13 @@ export function CreateDialog({
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<InventoryMovement[], Error>>;
   selectedMovement: Partial<InventoryMovement> | null | undefined;
+  setSelectedMovement: React.Dispatch<
+    React.SetStateAction<Partial<InventoryMovement> | null | undefined>
+  >;
 }) {
   const defaultFormState = {
     type: TypeInventoryMovement.ENTRY,
-    quantity: 0,
+    quantity: undefined,
     productId: "",
     referenceId: "",
     source: sourceMovement,
@@ -75,6 +79,7 @@ export function CreateDialog({
       createInventoryMovement(data, {
         onSuccess: () => {
           setIsOpen(false);
+          setSelectedMovement(undefined);
           refetch();
         },
       });
@@ -82,6 +87,7 @@ export function CreateDialog({
       updateInventoryMovement(data as InventoryMovement, {
         onSuccess: () => {
           setIsOpen(false);
+          setSelectedMovement(undefined);
           refetch();
         },
       });
@@ -102,6 +108,7 @@ export function CreateDialog({
       onOpenChange={(open) => {
         setIsOpen(open);
         setData(defaultFormState);
+        setSelectedMovement(undefined);
       }}
     >
       <form>
@@ -205,6 +212,7 @@ export function CreateDialog({
                     onClick={() => {
                       setIsOpen(false);
                       setData(defaultFormState);
+                      setSelectedMovement(undefined);
                     }}
                   >
                     Cancelar

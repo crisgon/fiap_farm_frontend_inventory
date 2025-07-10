@@ -28,7 +28,7 @@ function ProductionsTab({ data = [], isLoading = false, refetch }: TabsProps) {
   >({
     productId: undefined,
     type: TypeInventoryMovement.ENTRY,
-    quantity: 0,
+    quantity: undefined,
     source: SourceInventoryMovement.PRODUCTION,
     referenceId: undefined,
     createdAt: new Date(),
@@ -138,6 +138,7 @@ function ProductionsTab({ data = [], isLoading = false, refetch }: TabsProps) {
           refetch={refetch}
           sourceMovement={SourceInventoryMovement.PRODUCTION}
           selectedMovement={editableMovement}
+          setSelectedMovement={setEditableMovement}
         />
       )}
       {deleteModalIsOpen && (

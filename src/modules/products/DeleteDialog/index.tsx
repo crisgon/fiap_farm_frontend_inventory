@@ -43,7 +43,7 @@ export default function DeleteDialog({
         setIsOpen(false);
         setSelectedProduct(null);
 
-        toast.success("Produto deletada com sucesso");
+        toast.success("Produto deletado com sucesso");
       },
       onError: () => {
         toast.error("Não foi possível deletar o produto");

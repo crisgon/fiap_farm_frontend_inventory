@@ -20,6 +20,7 @@ import type { Product } from "@/domain/repositories/ProductsRepository";
 import { LeafyGreen } from "lucide-react";
 import { useUpdateProductMutation } from "@/hooks/Products/useUpdateProductMutation";
 import { useCreateProductMutation } from "@/hooks/Products/useCreateProductMutation";
+import { toast } from "sonner";
 
 interface CreateDialogProps {
   isOpen: boolean;
@@ -43,7 +44,6 @@ export default function CreateDialog({
   const { mutate: createMutation, isPending: createIsPending } =
     useCreateProductMutation();
 
-  console.log({ editableProduct });
   const handleUpdateProduct = () => {
     if (editableProduct?.uid) {
       updateMutation(editableProduct, {
@@ -52,18 +52,10 @@ export default function CreateDialog({
           setIsOpen(false);
           setEditableProduct(null);
 
-          console.log({
-            type: "success",
-            text1: "Produto atualizado com sucesso",
-            position: "bottom",
-          });
+          toast.success("Produto atualizado com sucesso");
         },
         onError: () => {
-          console.log({
-            type: "error",
-            text1: "Falha ao atualizar o produto",
-            position: "bottom",
-          });
+          toast.error("Falha ao atualizar o produto");
         },
       });
     } else {
@@ -81,18 +73,10 @@ export default function CreateDialog({
             setIsOpen(false);
             setEditableProduct(null);
 
-            console.log({
-              type: "success",
-              text1: "Produto criado com sucesso",
-              position: "bottom",
-            });
+            toast.success("Produto criado com sucesso");
           },
           onError: () => {
-            console.log({
-              type: "error",
-              text1: "Falha ao criar o produto",
-              position: "bottom",
-            });
+            toast.error("Falha ao criar o produto");
           },
         }
       );

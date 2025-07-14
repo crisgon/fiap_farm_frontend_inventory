@@ -1,47 +1,131 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useProductsQuery } from "@/hooks/Products/useProductsQuery";
+import { Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { useState } from "react";
+import Spinner from "@/components/spinner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+// import { CreateDialog } from "./CreateDialog";
+import DeleteDialog from "./DeleteDialog";
+import type { Product } from "@/domain/repositories/ProductsRepository";
+import CreateDialog from "./CreateDialog";
 
 function Products() {
+  const { data, isLoading, refetch } = useProductsQuery();
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [deleteModalIsOpen, setDeleteModalIsOpen] = useState<boolean>(false);
+  const [editableProduct, setEditableProduct] = useState<Product | null>({
+    uid: "",
+    name: "",
+    description: "",
+    averageProductionDays: 0,
+    createdAt: "",
+  });
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-muted/50 p-6">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="flex flex-row items-center gap-4">
-          <div>
-            <CardTitle>Produto Exemplo</CardTitle>
-            <CardDescription>
-              Esta é a página de produto do seu MFE.
-            </CardDescription>
-          </div>
+    <>
+      <Card>
+        <CardHeader className="justify-end">
+          <Button
+            size="lg"
+            onClick={() => {
+              setModalIsOpen(true);
+            }}
+          >
+            <PlusCircle />
+            Adicionar produto
+          </Button>
         </CardHeader>
         <CardContent>
-          <Badge variant="secondary" className="mb-4">
-            Novo
-          </Badge>
-          <p>
-            Este é um produto de exemplo. Você pode reutilizar esta página em
-            outros MFEs para testes e integração.
-          </p>
-          <Alert className="mt-4">
-            <AlertTitle>Aviso</AlertTitle>
-            <AlertDescription>
-              Este é um alerta de demonstração do <strong>shadcn/ui</strong>.
-            </AlertDescription>
-          </Alert>
+          {isLoading ? (
+            <div className="flex justify-center items-center my-4">
+              <Spinner />
+            </div>
+          ) : !data?.length ? (
+            <span>Não foram encontrados registros</span>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Produto</TableHead>
+                  <TableHead>Descrição</TableHead>
+                  <TableHead>Tempo médio de produção</TableHead>
+                  <TableHead />
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.map((prod) => (
+                  <TableRow key={prod.uid}>
+                    <TableCell className="font-medium">{prod.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {prod.description}
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {prod.averageProductionDays}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        flexDirection: "row",
+                        gap: 2,
+                      }}
+                    >
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditableProduct({
+                            ...prod,
+                          });
+                          setModalIsOpen(true);
+                        }}
+                      >
+                        <Pencil color="#198155" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditableProduct({ ...prod });
+                          setDeleteModalIsOpen(true);
+                        }}
+                      >
+                        <Trash2 color="#ef4444" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
-        <CardFooter className="flex justify-end">
-          <Button>Comprar agora</Button>
-        </CardFooter>
       </Card>
-    </div>
+
+      {modalIsOpen && (
+        <CreateDialog
+          isOpen={modalIsOpen}
+          setIsOpen={setModalIsOpen}
+          editableProduct={editableProduct ?? null}
+          setEditableProduct={setEditableProduct}
+          refetchProducts={refetch}
+        />
+      )}
+      {deleteModalIsOpen && (
+        <DeleteDialog
+          isOpen={deleteModalIsOpen}
+          setIsOpen={setDeleteModalIsOpen}
+          refetch={refetch}
+          selectedProduct={editableProduct}
+          setSelectedProduct={setEditableProduct}
+        />
+      )}
+    </>
   );
 }
 

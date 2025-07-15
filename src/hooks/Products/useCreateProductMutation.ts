@@ -4,6 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 
 export function useCreateProductMutation() {
   return useMutation({
-    mutationFn: (product: Omit<Product, "id">) => createProduct(product),
+    mutationFn: (product: Omit<Product, "uid">) => createProduct(product),
   });
 }

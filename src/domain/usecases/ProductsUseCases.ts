@@ -10,7 +10,7 @@ export const updateProduct = (product: Product): Promise<Product> => {
 };
 
 export const createProduct = (
-  product: Omit<Product, "id">
+  product: Omit<Product, "uid">
 ): Promise<Product> => {
   return request<Product>("POST", "products", product);
 };

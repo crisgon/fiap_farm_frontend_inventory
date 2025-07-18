@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProductsQuery } from "@/hooks/Products/useProductsQuery";
 import { Pencil, PlusCircle, Trash2 } from "lucide-react";
@@ -31,8 +31,9 @@ function Products() {
 
   return (
     <>
-      <Card>
-        <CardHeader className="justify-end">
+      <div className="flex flex-col items-center min-h-screen bg-muted/50 p-6">
+        <div className="flex flex-row w-full max-w-5xl h-full justify-between items-center">
+          <h3 className="font-bold text-3xl text-primary">Vendas</h3>
           <Button
             size="lg"
             onClick={() => {
@@ -42,71 +43,72 @@ function Products() {
             <PlusCircle />
             Adicionar produto
           </Button>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center items-center my-4">
-              <Spinner />
-            </div>
-          ) : !data?.length ? (
-            <span>Não foram encontrados registros</span>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Produto</TableHead>
-                  <TableHead>Descrição</TableHead>
-                  <TableHead>Tempo médio de produção</TableHead>
-                  <TableHead />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.map((prod) => (
-                  <TableRow key={prod.uid}>
-                    <TableCell className="font-medium">{prod.name}</TableCell>
-                    <TableCell className="font-medium">
-                      {prod.description}
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {prod.averageProductionDays}
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        flexDirection: "row",
-                        gap: 2,
-                      }}
-                    >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setEditableProduct({
-                            ...prod,
-                          });
-                          setModalIsOpen(true);
-                        }}
-                      >
-                        <Pencil color="#198155" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          setEditableProduct({ ...prod });
-                          setDeleteModalIsOpen(true);
-                        }}
-                      >
-                        <Trash2 color="#ef4444" />
-                      </Button>
-                    </TableCell>
+        </div>
+        <Card className="w-full max-w-5xl  mt-8">
+          <CardContent>
+            {isLoading ? (
+              <div className="flex justify-center items-center my-4">
+                <Spinner />
+              </div>
+            ) : !data?.length ? (
+              <span>Não foram encontrados registros</span>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Produto</TableHead>
+                    <TableHead>Descrição</TableHead>
+                    <TableHead>Tempo médio de produção</TableHead>
+                    <TableHead />
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-
+                </TableHeader>
+                <TableBody>
+                  {data.map((prod) => (
+                    <TableRow key={prod.uid}>
+                      <TableCell className="font-medium">{prod.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {prod.description}
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {prod.averageProductionDays}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          flexDirection: "row",
+                          gap: 2,
+                        }}
+                      >
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setEditableProduct({
+                              ...prod,
+                            });
+                            setModalIsOpen(true);
+                          }}
+                        >
+                          <Pencil color="#198155" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            setEditableProduct({ ...prod });
+                            setDeleteModalIsOpen(true);
+                          }}
+                        >
+                          <Trash2 color="#ef4444" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </CardContent>
+        </Card>
+      </div>
       {modalIsOpen && (
         <CreateDialog
           isOpen={modalIsOpen}

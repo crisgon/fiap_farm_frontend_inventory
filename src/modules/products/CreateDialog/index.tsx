@@ -89,7 +89,7 @@ export default function CreateDialog({
         if (!open) setEditableProduct(null);
       }}
     >
-      <DialogContent className="min-w-full sm:max-w-[425px]">
+      <DialogContent className="sm:w-full w-[425px]">
         <DialogHeader>
           <DialogTitle>{editableProduct?.name || ""}</DialogTitle>
           <DialogDescription className="mt-8 mb-6">
